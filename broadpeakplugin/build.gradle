@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply from: 'version.gradle'
+
+android {
+    compileSdkVersion 29
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        abortOnError false
+    }
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionName libVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+
+    // TODO: when playkit without plugins is released, replace this.
+
+
+//    implementation 'com.kaltura:playkit-android:dev-SNAPSHOT'
+    implementation project(":playkit")
+
+    implementation 'tv.broadpeak.smartlib:smartlib-kaltura:03.01.02.3264'
+}
