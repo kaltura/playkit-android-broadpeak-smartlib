@@ -19,8 +19,8 @@ allprojects {
         jcenter()
         maven {
             credentials {
-                username "kaltura"
-                password "WFVDJe4g"
+                username "username"
+                password "password"
             }
             url "https://delivery-platform.broadpeak.tv/android/repository/smartlib"
         }
