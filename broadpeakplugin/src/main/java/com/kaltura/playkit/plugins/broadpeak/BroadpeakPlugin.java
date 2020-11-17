@@ -27,7 +27,6 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     private static final PKLog log = PKLog.get("BroadpeakPlugin");
 
     private final String SMARTLIB_PRE_STARTUP_TIME_KEY = "pre_startup_time";
-    private Player player;
     private MessageBus messageBus;
     private StreamingSession session;
     private long requestStartTime;
@@ -64,10 +63,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         session = SmartLib.getInstance().createStreamingSession();
 
         this.messageBus = messageBus;
-        this.player = player;
-        this.player.addMediaEntryInterceptor(this);
 
-        session.attachPlayer(this.player);
+        session.attachPlayer(player);
 
         requestStartTime = System.currentTimeMillis();
     }
@@ -92,9 +89,6 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     protected void onDestroy() {
         // Stop the session
         session.stopStreamingSession();
-
-        player.removeMediaEntryInterceptor(this);
-        player = null;
 
         // Release SmartLib
         SmartLib.getInstance().release();
