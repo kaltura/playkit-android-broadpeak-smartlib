@@ -4,17 +4,17 @@ import android.content.Context;
 
 import com.kaltura.playkit.BuildConfig;
 import com.kaltura.playkit.MessageBus;
-import com.kaltura.playkit.OnMediaInterceptorListener;
 import com.kaltura.playkit.PKError;
 import com.kaltura.playkit.PKLog;
 import com.kaltura.playkit.PKMediaConfig;
 import com.kaltura.playkit.PKMediaEntry;
-import com.kaltura.playkit.PKMediaEntryInterceptor;
 import com.kaltura.playkit.PKMediaSource;
 import com.kaltura.playkit.PKPlugin;
 import com.kaltura.playkit.Player;
 import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.playkit.player.PKPlayerErrorType;
+import com.kaltura.tvplayer.OnMediaInterceptorListener;
+import com.kaltura.tvplayer.PKMediaEntryInterceptor;
 
 import tv.broadpeak.smartlib.SmartLib;
 import tv.broadpeak.smartlib.session.streaming.StreamingSession;
@@ -116,8 +116,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                                 new Throwable(result.getErrorMessage()))
                 ));
             }
+            listener.onComplete();
         }
-
-        listener.onApplyMediaCompleted();
     }
 }
