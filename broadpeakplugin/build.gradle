@@ -29,7 +29,7 @@ dependencies {
 
     // TODO: when playkit without plugins is released, replace this.
 
-    implementation 'com.kaltura:kaltura-player-android:develop-SNAPSHOT'
+    implementation 'com.kaltura.player:tvplayer:develop-SNAPSHOT'
 
 //    implementation project(":playkit")
 //    implementation project(":tvplayer")

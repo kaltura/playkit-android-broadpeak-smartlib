@@ -50,6 +50,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
     @Override
     protected void onLoad(Player player, Object config, MessageBus messageBus, Context context) {
+        if (config == null) {
+            log.e("Broadpeak config is missing");
+            return;
+        }
+
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
         SmartLib.getInstance().init(context,
                 bpConfig.getAnalyticsAddress(),
@@ -92,26 +97,41 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
     @Override
     public void apply(PKMediaEntry mediaEntry, PKMediaEntryInterceptor.Listener listener) {
+        int errorCode = -1;
+        String errorMessage = "Unknown";
+
         // Set the pre-startup time
         SmartLib.getInstance().setCustomParameter(SMARTLIB_PRE_STARTUP_TIME_KEY,
                 (System.currentTimeMillis() - requestStartTime) + "");
 
-        if (mediaEntry.getSources().size() > 0) {
+        if (mediaEntry != null && mediaEntry.getSources() != null &&
+                !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
             PKMediaSource source = mediaEntry.getSources().get(0);
             // Start the session and get the final stream URL
             StreamingSessionResult result = session.getURL(source.getUrl());
-            if (!result.isError()) {
+            if (result != null && !result.isError()) {
                 // Replace the URL
                 source.setUrl(result.getURL());
             } else {
+                if (result != null) {
+                    errorCode = result.getErrorCode();
+                    errorMessage = result.getErrorMessage();
+                }
                 // send event to MessageBus
                 messageBus.post(new BroadpeakEvent.ErrorEvent(
                         BroadpeakEvent.Type.ERROR,
-                        result.getErrorCode(),
-                        result.getErrorMessage())
+                        errorCode,
+                        errorMessage)
                 );
             }
+        } else {
+            errorMessage = "Invalid media entry";
+            messageBus.post(new BroadpeakEvent.ErrorEvent(
+                    BroadpeakEvent.Type.ERROR,
+                    errorCode,
+                    errorMessage));
         }
+
         listener.onComplete();
     }
 }

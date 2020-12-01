@@ -23,10 +23,10 @@ allprojects {
 ```
 Next, add the **BroadpeakPlugin** dependency to the `build.gradle` file of your app module
 ```Groovy
-implementation 'com.kaltura.playkit:broadpeakplugin:x.x.x'
+implementation 'com.kaltura.playkit:broadpeakplugin:4.x.x'
 ```
 
-This dependency already includes **Playkit and KalturaPlayer libraries** internally, so no need to add them to the client app's `build.gradle`.
+This dependency includes **com.kaltura.player:tvplayer** internally, so no need to add them to the client app's `build.gradle`.
 
 Next, lets see how to use the **BroadpeakPlugin** in your application.
 
@@ -38,22 +38,17 @@ In the following code snippet, you can see how to configure **BroadpeakPlugin** 
 
 ```Kotlin
 class MainActivity : AppCompatActivity() {
-
     private lateinit var player: KalturaPlayer
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         loadPlaykitPlayer()
     }
-
     private fun loadPlaykitPlayer() {
         // PlayerInitOptions
         val playerInitOptions = PlayerInitOptions(PARTNER_ID)
         playerInitOptions.setAutoPlay(true)
         playerInitOptions.setAllowCrossProtocolEnabled(true)
-
         // Broadpeak Configuration
         val pkPluginConfigs = PKPluginConfigs()
         val broadpeakConfig = BroadpeakConfig().apply {
@@ -64,11 +59,14 @@ class MainActivity : AppCompatActivity() {
             // broadpeakDomainNames The domain name list to use to identify url(s) using broadpeak product (i.e "cdn.broadpeak.com,cdn2.broadpeak.com"). "*" specific value is used to declare that all given url are using broadpeak product. Empty value "" is used to declare that all given url are not using broadpeak value
             broadpeakDomainNames = "*"
         }
-
         pkPluginConfigs.setPluginConfig(BroadpeakPlugin.factory.name, broadpeakConfig)
         playerInitOptions.setPluginConfigs(pkPluginConfigs)
-
         player = KalturaOttPlayer.create(this@MainActivity, playerInitOptions)
+
+        // handle Broadpeak error event
+         player.addListener(this, BroadpeakEvent.error) { event ->
+            Log.i(TAG, "BROADPEAK ERROR " + event.errorMessage)
+        }
     }
 }
 ```
