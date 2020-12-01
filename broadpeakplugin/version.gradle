@@ -1,4 +1,3 @@
-
 // Library Version
 ext.libVersion = 'dev'
 
@@ -17,7 +16,7 @@ try {
 
     publish {
         artifactId = 'broadpeakplugin'
-        desc = 'PlayKit Broadpeak-Smartlibs Plugin'
+        desc = 'PlayKit Broadpeak-Smartlib Plugin'
         repoName = 'android'
         userOrg = 'kaltura'
         groupId = 'com.kaltura.playkit'
