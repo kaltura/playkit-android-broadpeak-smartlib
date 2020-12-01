@@ -4,17 +4,13 @@ import android.content.Context;
 
 import com.kaltura.playkit.BuildConfig;
 import com.kaltura.playkit.MessageBus;
-import com.kaltura.playkit.OnMediaInterceptorListener;
-import com.kaltura.playkit.PKError;
 import com.kaltura.playkit.PKLog;
 import com.kaltura.playkit.PKMediaConfig;
 import com.kaltura.playkit.PKMediaEntry;
-import com.kaltura.playkit.PKMediaEntryInterceptor;
 import com.kaltura.playkit.PKMediaSource;
 import com.kaltura.playkit.PKPlugin;
 import com.kaltura.playkit.Player;
-import com.kaltura.playkit.PlayerEvent;
-import com.kaltura.playkit.player.PKPlayerErrorType;
+import com.kaltura.tvplayer.PKMediaEntryInterceptor;
 
 import tv.broadpeak.smartlib.SmartLib;
 import tv.broadpeak.smartlib.session.streaming.StreamingSession;
@@ -54,6 +50,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
     @Override
     protected void onLoad(Player player, Object config, MessageBus messageBus, Context context) {
+        if (config == null) {
+            log.e("Broadpeak config is missing");
+            return;
+        }
+
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
         SmartLib.getInstance().init(context,
                 bpConfig.getAnalyticsAddress(),
@@ -95,29 +96,42 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     }
 
     @Override
-    public void apply(PKMediaEntry mediaEntry, OnMediaInterceptorListener listener) {
+    public void apply(PKMediaEntry mediaEntry, PKMediaEntryInterceptor.Listener listener) {
+        int errorCode = -1;
+        String errorMessage = "Unknown";
+
         // Set the pre-startup time
         SmartLib.getInstance().setCustomParameter(SMARTLIB_PRE_STARTUP_TIME_KEY,
                 (System.currentTimeMillis() - requestStartTime) + "");
 
-        if (mediaEntry.getSources().size() > 0) {
+        if (mediaEntry != null && mediaEntry.getSources() != null &&
+                !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
             PKMediaSource source = mediaEntry.getSources().get(0);
             // Start the session and get the final stream URL
             StreamingSessionResult result = session.getURL(source.getUrl());
-            if (!result.isError()) {
+            if (result != null && !result.isError()) {
                 // Replace the URL
                 source.setUrl(result.getURL());
             } else {
+                if (result != null) {
+                    errorCode = result.getErrorCode();
+                    errorMessage = result.getErrorMessage();
+                }
                 // send event to MessageBus
-                messageBus.post(new PlayerEvent.Error(
-                        new PKError(
-                                PKPlayerErrorType.LOAD_ERROR,
-                                result.getErrorMessage(),
-                                new Throwable(result.getErrorMessage()))
-                ));
+                messageBus.post(new BroadpeakEvent.ErrorEvent(
+                        BroadpeakEvent.Type.ERROR,
+                        errorCode,
+                        errorMessage)
+                );
             }
+        } else {
+            errorMessage = "Invalid media entry";
+            messageBus.post(new BroadpeakEvent.ErrorEvent(
+                    BroadpeakEvent.Type.ERROR,
+                    errorCode,
+                    errorMessage));
         }
 
-        listener.onApplyMediaCompleted();
+        listener.onComplete();
     }
 }
