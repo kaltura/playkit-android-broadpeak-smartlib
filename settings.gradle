@@ -1,3 +1,5 @@
 include ':broadpeakplugin'
-include ':playkit'
-project(':playkit').projectDir = new File('../playkit-android/playkit')
+//include ':tvplayer'
+//project(':tvplayer').projectDir = new File('../../../kaltura-player-android/tvplayer')
+//include ':playkit'
+//project(':playkit').projectDir = new File('../playkit-android/playkit')
