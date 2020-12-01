@@ -4,16 +4,12 @@ import android.content.Context;
 
 import com.kaltura.playkit.BuildConfig;
 import com.kaltura.playkit.MessageBus;
-import com.kaltura.playkit.PKError;
 import com.kaltura.playkit.PKLog;
 import com.kaltura.playkit.PKMediaConfig;
 import com.kaltura.playkit.PKMediaEntry;
 import com.kaltura.playkit.PKMediaSource;
 import com.kaltura.playkit.PKPlugin;
 import com.kaltura.playkit.Player;
-import com.kaltura.playkit.PlayerEvent;
-import com.kaltura.playkit.player.PKPlayerErrorType;
-import com.kaltura.tvplayer.OnMediaInterceptorListener;
 import com.kaltura.tvplayer.PKMediaEntryInterceptor;
 
 import tv.broadpeak.smartlib.SmartLib;
@@ -95,7 +91,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     }
 
     @Override
-    public void apply(PKMediaEntry mediaEntry, OnMediaInterceptorListener listener) {
+    public void apply(PKMediaEntry mediaEntry, PKMediaEntryInterceptor.Listener listener) {
         // Set the pre-startup time
         SmartLib.getInstance().setCustomParameter(SMARTLIB_PRE_STARTUP_TIME_KEY,
                 (System.currentTimeMillis() - requestStartTime) + "");
@@ -109,14 +105,13 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 source.setUrl(result.getURL());
             } else {
                 // send event to MessageBus
-                messageBus.post(new PlayerEvent.Error(
-                        new PKError(
-                                PKPlayerErrorType.LOAD_ERROR,
-                                result.getErrorMessage(),
-                                new Throwable(result.getErrorMessage()))
-                ));
+                messageBus.post(new BroadpeakEvent.ErrorEvent(
+                        BroadpeakEvent.Type.ERROR,
+                        result.getErrorCode(),
+                        result.getErrorMessage())
+                );
             }
-            listener.onComplete();
         }
+        listener.onComplete();
     }
 }
