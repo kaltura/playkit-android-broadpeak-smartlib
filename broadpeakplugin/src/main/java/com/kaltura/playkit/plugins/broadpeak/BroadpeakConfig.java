@@ -8,8 +8,8 @@ public class BroadpeakConfig {
     private String analyticsAddress;
     private String nanoCDNHost;
     private String broadpeakDomainNames;
-    private String broadpeakDomainNames;
-    
+    private String broadpea111kDomainNames;
+
     public String getAnalyticsAddress() {
         return analyticsAddress;
     }
