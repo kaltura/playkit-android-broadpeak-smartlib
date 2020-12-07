@@ -87,8 +87,10 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     @Override
     protected void onDestroy() {
         // Stop the session
-        if (session != null)
+        if (session != null) {
             session.stopStreamingSession();
+            session = null;
+        }
 
         if (player != null) {
             player.destroy();
