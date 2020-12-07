@@ -25,6 +25,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     private final String SMARTLIB_PRE_STARTUP_TIME_KEY = "pre_startup_time";
     private MessageBus messageBus;
     private StreamingSession session;
+    private Player player;
     private long requestStartTime;
 
     public static final Factory factory = new Factory() {
@@ -61,11 +62,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 bpConfig.getNanoCDNHost(),
                 bpConfig.getBroadpeakDomainNames()
         );
-        session = SmartLib.getInstance().createStreamingSession();
-
+        this.player = player;
         this.messageBus = messageBus;
-
-        session.attachPlayer(player);
 
         requestStartTime = System.currentTimeMillis();
     }
@@ -89,7 +87,15 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     @Override
     protected void onDestroy() {
         // Stop the session
-        session.stopStreamingSession();
+        if (session != null) {
+            session.stopStreamingSession();
+            session = null;
+        }
+
+        if (player != null) {
+            player.destroy();
+            player = null;
+        }
 
         // Release SmartLib
         SmartLib.getInstance().release();
@@ -108,6 +114,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
             PKMediaSource source = mediaEntry.getSources().get(0);
             // Start the session and get the final stream URL
+            session = SmartLib.getInstance().createStreamingSession();
+            session.attachPlayer(player);
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 // Replace the URL
