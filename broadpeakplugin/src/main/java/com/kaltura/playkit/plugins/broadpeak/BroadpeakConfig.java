@@ -13,23 +13,26 @@ public class BroadpeakConfig {
         return analyticsAddress;
     }
 
-    public void setAnalyticsAddress(String analyticsAddress) {
+    public BroadpeakConfig setAnalyticsAddress(String analyticsAddress) {
         this.analyticsAddress = analyticsAddress;
+        return this;
     }
 
     public String getNanoCDNHost() {
         return nanoCDNHost;
     }
 
-    public void setNanoCDNHost(String nanoCDNHost) {
+    public BroadpeakConfig setNanoCDNHost(String nanoCDNHost) {
         this.nanoCDNHost = nanoCDNHost;
+        return this;
     }
 
     public String getBroadpeakDomainNames() {
         return broadpeakDomainNames;
     }
 
-    public void setBroadpeakDomainNames(String broadpeakDomainNames) {
+    public BroadpeakConfig setBroadpeakDomainNames(String broadpeakDomainNames) {
         this.broadpeakDomainNames = broadpeakDomainNames;
+        return this;
     }
 }
