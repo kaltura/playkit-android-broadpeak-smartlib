@@ -70,3 +70,21 @@ class MainActivity : AppCompatActivity() {
     }
 }
 ```
+
+### Error Handling
+
+Incase there is failure from the Broadpeak SDK side error will be fired and in case app is registered to this error it will be received in the listener.
+
+#### The event payload contains 3 parameters
+
+```
+ BroadpeakEvent.Type.ERROR
+ errorCode
+ errorMessage
+```
+
+```
+player?.addListener(this, BroadpeakEvent.error) { event ->
+            Log.i(TAG, "BROADPEAK ERROR " + event.errorMessage)
+}
+```
