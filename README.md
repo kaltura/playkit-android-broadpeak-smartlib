@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-### Error Handling
+## Error Handling
 
 Incase there is failure from the Broadpeak SDK side error will be fired and in case app is registered to this error it will be received in the listener.
 
@@ -88,3 +88,12 @@ player?.addListener(this, BroadpeakEvent.error) { event ->
             Log.i(TAG, "BROADPEAK ERROR " + event.errorMessage)
 }
 ```
+
+## Sample
+
+[Broadpeak Sample](https://github.com/kaltura/kaltura-player-android-samples/tree/master/AdvancedSamples/Broadpeak)
+
+In this sample you will have to provide the username and password for the broadpeak sdk (in build.gradle)
+and the partner and media information as well
+in order for it to work properly.
+
