@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply from: 'version.gradle'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -13,7 +13,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionName libVersion
     }
 
@@ -30,6 +30,17 @@ dependencies {
     // TODO: when tvplayer is released, replace this.
     api 'com.kaltura:kaltura-player-android:develop-SNAPSHOT'
     //api project(":tvplayer")
-
     api 'tv.broadpeak.smartlib:smartlib-kaltura:03.01.02.3264'
 }
+
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+if (hasProperty('VERSION_NAME')) {
+    apply from: './gradle-mvn-push.gradle'
+}
+
