@@ -10,6 +10,7 @@ import com.kaltura.playkit.PKMediaEntry;
 import com.kaltura.playkit.PKMediaSource;
 import com.kaltura.playkit.PKPlugin;
 import com.kaltura.playkit.Player;
+import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.tvplayer.PKMediaEntryInterceptor;
 
 import tv.broadpeak.smartlib.SmartLib;
@@ -66,22 +67,30 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         this.messageBus = messageBus;
 
         requestStartTime = System.currentTimeMillis();
+
+        messageBus.addListener(this, PlayerEvent.stopped, event -> {
+            log.d("BroadpeakPlugin STOPPED");
+        });
     }
 
     @Override
     protected void onUpdateMedia(PKMediaConfig mediaConfig) {
+        log.d("Start onUpdateMedia");
     }
 
     @Override
     protected void onUpdateConfig(Object config) {
+        log.d("Start onUpdateConfig");
     }
 
     @Override
     protected void onApplicationPaused() {
+        log.d("Start onApplicationPaused");
     }
 
     @Override
     protected void onApplicationResumed() {
+        log.d("Start onApplicationResumed");
     }
 
     @Override
