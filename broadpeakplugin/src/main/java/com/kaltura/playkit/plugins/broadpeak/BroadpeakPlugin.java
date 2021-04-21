@@ -74,14 +74,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             log.d("BroadpeakPlugin PlayerEvent ERROR");
             if (event.error.severity == PKError.Severity.Fatal) {
                 // Stop the session in case of Playback Error
-                stopStreamingSession();
+                stopStreamingSession(null);
             }
-        });
-
-        messageBus.addListener(this, PlayerEvent.ended, event -> {
-            log.d("BroadpeakPlugin PlayerEvent ENDED");
-            // Stop the session in case of Media ends
-            stopStreamingSession();
         });
     }
 
@@ -108,7 +102,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     @Override
     protected void onDestroy() {
         // Stop the session
-        stopStreamingSession();
+        stopStreamingSession(null);
 
         mediaEntry = null;
 
@@ -121,9 +115,13 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         SmartLib.getInstance().release();
     }
 
-    private void stopStreamingSession() {
+    private void stopStreamingSession(Integer errorCode) {
         if (session != null) {
-            session.stopStreamingSession();
+            if (errorCode != null) {
+                session.stopStreamingSession(errorCode);
+            } else {
+                session.stopStreamingSession();
+            }
             session = null;
         }
     }
@@ -142,7 +140,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
             // Stop the session for fresh media entry
             if (this.mediaEntry != null) {
-                stopStreamingSession();
+                stopStreamingSession(null);
             }
 
             this.mediaEntry = mediaEntry;
@@ -157,10 +155,12 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 source.setUrl(result.getURL());
             } else {
                 // Stop the session in case of error
-                stopStreamingSession();
                 if (result != null) {
                     errorCode = result.getErrorCode();
                     errorMessage = result.getErrorMessage();
+                    stopStreamingSession(errorCode);
+                } else {
+                    stopStreamingSession(null);
                 }
                 // send event to MessageBus
                 messageBus.post(new BroadpeakEvent.ErrorEvent(
@@ -170,6 +170,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 );
             }
         } else {
+            stopStreamingSession(null);
             errorMessage = "Invalid media entry";
             messageBus.post(new BroadpeakEvent.ErrorEvent(
                     BroadpeakEvent.Type.ERROR,
