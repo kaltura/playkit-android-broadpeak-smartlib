@@ -29,7 +29,6 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     private StreamingSession session;
     private Player player;
     private long requestStartTime;
-    private PKMediaEntry mediaEntry;
 
     public static final Factory factory = new Factory() {
         @Override
@@ -104,8 +103,6 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         // Stop the session
         stopStreamingSession(null);
 
-        mediaEntry = null;
-
         if (player != null) {
             player.destroy();
             player = null;
@@ -139,11 +136,9 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
 
             // Stop the session for fresh media entry
-            if (this.mediaEntry != null) {
+            if (session != null) {
                 stopStreamingSession(null);
             }
-
-            this.mediaEntry = mediaEntry;
 
             PKMediaSource source = mediaEntry.getSources().get(0);
             // Start the session and get the final stream URL
