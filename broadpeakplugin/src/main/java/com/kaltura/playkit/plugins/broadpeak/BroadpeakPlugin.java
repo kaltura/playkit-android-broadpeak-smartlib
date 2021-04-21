@@ -125,8 +125,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
     @Override
     public void apply(PKMediaEntry mediaEntry, PKMediaEntryInterceptor.Listener listener) {
-        int errorCode = -1;
-        String errorMessage = "Unknown";
+        int errorCode = BroadpeakError.Unknown.errorCode;
+        String errorMessage = BroadpeakError.Unknown.errorMessage;;
 
         // Set the pre-startup time
         SmartLib.getInstance().setCustomParameter(SMARTLIB_PRE_STARTUP_TIME_KEY,
@@ -166,7 +166,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             }
         } else {
             stopStreamingSession(null);
-            errorMessage = "Invalid media entry";
+            errorMessage = BroadpeakError.InvalidMediaEntry.errorMessage;
+            errorCode = BroadpeakError.InvalidMediaEntry.errorCode;
             messageBus.post(new BroadpeakEvent.ErrorEvent(
                     BroadpeakEvent.Type.ERROR,
                     errorCode,
