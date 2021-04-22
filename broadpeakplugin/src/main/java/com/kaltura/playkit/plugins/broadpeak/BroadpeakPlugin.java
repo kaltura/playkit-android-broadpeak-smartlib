@@ -29,6 +29,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     private StreamingSession session;
     private Player player;
     private long requestStartTime;
+    private BroadpeakConfig config;
+    private Context context;
 
     public static final Factory factory = new Factory() {
         @Override
@@ -52,26 +54,29 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     };
 
     @Override
-    protected void onLoad(Player player, Object config, MessageBus messageBus, Context context) {
+    protected void onLoad(final Player player, Object config, final MessageBus messageBus, Context context) {
         if (config == null) {
             log.e("Broadpeak config is missing");
             return;
         }
 
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
+        this.config = bpConfig;
+
         SmartLib.getInstance().init(context,
                 bpConfig.getAnalyticsAddress(),
                 bpConfig.getNanoCDNHost(),
-                bpConfig.getBroadpeakDomainNames()
-        );
+                bpConfig.getBroadpeakDomainNames());
+
         this.player = player;
         this.messageBus = messageBus;
+        this.context = context;
 
         requestStartTime = System.currentTimeMillis();
 
-        messageBus.addListener(this, PlayerEvent.error, event -> {
-            log.d("BroadpeakPlugin PlayerEvent ERROR");
+        this.messageBus.addListener(this, PlayerEvent.error, event -> {
             if (event.error.severity == PKError.Severity.Fatal) {
+                log.e("PlayerEvent Fatal Error");
                 // Stop the session in case of Playback Error
                 stopStreamingSession(null);
             }
@@ -86,6 +91,25 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     @Override
     protected void onUpdateConfig(Object config) {
         log.d("Start onUpdateConfig");
+        if (config == null) {
+            log.e("Broadpeak config is missing");
+            return;
+        }
+
+        BroadpeakConfig bpConfig = (BroadpeakConfig) config;
+        if (!this.config.equals(bpConfig) && context != null) {
+            log.d("Releasing Smartlib and initializing with updated configs");
+            // Config is changed during the session on changeMedia
+            this.config = bpConfig;
+            stopStreamingSession(null);
+            SmartLib.getInstance().release();
+            SmartLib.getInstance().init(context,
+                    bpConfig.getAnalyticsAddress(),
+                    bpConfig.getNanoCDNHost(),
+                    bpConfig.getBroadpeakDomainNames());
+        } else {
+            log.d("Previous and latest configs are same");
+        }
     }
 
     @Override
@@ -102,14 +126,15 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     protected void onDestroy() {
         // Stop the session
         stopStreamingSession(null);
-
+        // Release SmartLib
+        SmartLib.getInstance().release();
         if (player != null) {
             player.destroy();
             player = null;
         }
-
-        // Release SmartLib
-        SmartLib.getInstance().release();
+        if (messageBus != null) {
+            messageBus.removeListeners(this);
+        }
     }
 
     private void stopStreamingSession(Integer errorCode) {
