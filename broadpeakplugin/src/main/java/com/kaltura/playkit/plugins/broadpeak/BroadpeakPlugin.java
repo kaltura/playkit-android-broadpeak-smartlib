@@ -132,10 +132,6 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         stopStreamingSession(null);
         // Release SmartLib
         SmartLib.getInstance().release();
-        if (player != null) {
-            player.destroy();
-            player = null;
-        }
         if (messageBus != null) {
             messageBus.removeListeners(this);
         }
