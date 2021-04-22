@@ -90,6 +90,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
     @Override
     protected void onUpdateConfig(Object config) {
+        // Calling onUpdateConfig with new config by application
+        // while not in changeMedia flow will break Broadpeak SmartLib Session
+
+        // If Broadpeak config needs a change then do it only while changing the Media by application
+
         log.d("Start onUpdateConfig");
         if (config == null) {
             log.e("Broadpeak config is missing");
@@ -98,8 +103,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
         if (!this.config.equals(bpConfig) && context != null) {
-            log.d("Releasing Smartlib and initializing with updated configs");
-            // Config is changed during the session on changeMedia
+            log.d("Releasing SmartLib and initializing with updated configs");
             this.config = bpConfig;
             stopStreamingSession(null);
             SmartLib.getInstance().release();
