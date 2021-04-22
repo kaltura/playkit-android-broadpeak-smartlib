@@ -172,7 +172,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             PKMediaSource source = mediaEntry.getSources().get(0);
             // Start the session and get the final stream URL
             session = SmartLib.getInstance().createStreamingSession();
-            session.attachPlayer(player);
+            session.attachPlayer(player, messageBus);
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 // Replace the URL
