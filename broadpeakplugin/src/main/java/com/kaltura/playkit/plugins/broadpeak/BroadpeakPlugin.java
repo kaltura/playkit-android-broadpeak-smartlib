@@ -55,7 +55,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
     @Override
     protected void onLoad(final Player player, Object config, final MessageBus messageBus, Context context) {
-        if (config == null) {
+        if (!(config instanceof BroadpeakConfig)) {
             log.e("Broadpeak config is missing");
             return;
         }
@@ -96,13 +96,13 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         // If Broadpeak config needs a change then do it only while changing the Media by application
 
         log.d("Start onUpdateConfig");
-        if (config == null) {
+        if (!(config instanceof BroadpeakConfig)) {
             log.e("Broadpeak config is missing");
             return;
         }
 
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
-        if (!this.config.equals(bpConfig) && context != null) {
+        if (!this.config.equals(bpConfig)) {
             log.d("Releasing SmartLib and initializing with updated configs");
             this.config = bpConfig;
             stopStreamingSession(null);
