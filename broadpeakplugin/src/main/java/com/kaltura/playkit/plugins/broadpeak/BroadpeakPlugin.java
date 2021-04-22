@@ -24,11 +24,9 @@ import tv.broadpeak.smartlib.session.streaming.StreamingSessionResult;
 public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor {
     private static final PKLog log = PKLog.get("BroadpeakPlugin");
 
-    private final String SMARTLIB_PRE_STARTUP_TIME_KEY = "pre_startup_time";
     private MessageBus messageBus;
     private StreamingSession session;
     private Player player;
-    private long requestStartTime;
     private BroadpeakConfig config;
     private Context context;
 
@@ -72,13 +70,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         this.messageBus = messageBus;
         this.context = context;
 
-        requestStartTime = System.currentTimeMillis();
-
         this.messageBus.addListener(this, PlayerEvent.error, event -> {
             if (event.error.severity == PKError.Severity.Fatal) {
                 log.e("PlayerEvent Fatal Error");
                 // Stop the session in case of Playback Error
-                stopStreamingSession(null);
+                stopStreamingSession();
             }
         });
     }
@@ -105,7 +101,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         if (!this.config.equals(bpConfig)) {
             log.d("Releasing SmartLib and initializing with updated configs");
             this.config = bpConfig;
-            stopStreamingSession(null);
+            stopStreamingSession();
             SmartLib.getInstance().release();
             SmartLib.getInstance().init(context,
                     bpConfig.getAnalyticsAddress(),
@@ -129,7 +125,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     @Override
     protected void onDestroy() {
         // Stop the session
-        stopStreamingSession(null);
+        stopStreamingSession();
         // Release SmartLib
         SmartLib.getInstance().release();
         if (messageBus != null) {
@@ -137,13 +133,9 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         }
     }
 
-    private void stopStreamingSession(Integer errorCode) {
+    private void stopStreamingSession() {
         if (session != null) {
-            if (errorCode != null) {
-                session.stopStreamingSession(errorCode);
-            } else {
-                session.stopStreamingSession();
-            }
+            session.stopStreamingSession();
             session = null;
         }
     }
@@ -153,16 +145,12 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         int errorCode = BroadpeakError.Unknown.errorCode;
         String errorMessage = BroadpeakError.Unknown.errorMessage;;
 
-        // Set the pre-startup time
-        SmartLib.getInstance().setCustomParameter(SMARTLIB_PRE_STARTUP_TIME_KEY,
-                (System.currentTimeMillis() - requestStartTime) + "");
-
         if (mediaEntry != null && mediaEntry.getSources() != null &&
                 !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
 
             // Stop the session for fresh media entry
             if (session != null) {
-                stopStreamingSession(null);
+                stopStreamingSession();
             }
 
             PKMediaSource source = mediaEntry.getSources().get(0);
@@ -178,9 +166,9 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 if (result != null) {
                     errorCode = result.getErrorCode();
                     errorMessage = result.getErrorMessage();
-                    stopStreamingSession(errorCode);
+                    stopStreamingSession();
                 } else {
-                    stopStreamingSession(null);
+                    stopStreamingSession();
                 }
                 // send event to MessageBus
                 messageBus.post(new BroadpeakEvent.ErrorEvent(
@@ -190,7 +178,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 );
             }
         } else {
-            stopStreamingSession(null);
+            stopStreamingSession();
             errorMessage = BroadpeakError.InvalidMediaEntry.errorMessage;
             errorCode = BroadpeakError.InvalidMediaEntry.errorCode;
             messageBus.post(new BroadpeakEvent.ErrorEvent(
