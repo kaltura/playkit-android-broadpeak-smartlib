@@ -71,7 +71,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         this.context = context;
 
         this.messageBus.addListener(this, PlayerEvent.error, event -> {
-            if (event.error.severity == PKError.Severity.Fatal) {
+            if (PKError.Severity.Fatal.equals(event.error.severity)) {
                 log.e("PlayerEvent Fatal Error");
                 // Stop the session in case of Playback Error
                 stopStreamingSession();
@@ -143,7 +143,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     @Override
     public void apply(PKMediaEntry mediaEntry, PKMediaEntryInterceptor.Listener listener) {
         int errorCode = BroadpeakError.Unknown.errorCode;
-        String errorMessage = BroadpeakError.Unknown.errorMessage;;
+        String errorMessage = BroadpeakError.Unknown.errorMessage;
 
         if (mediaEntry != null && mediaEntry.getSources() != null &&
                 !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
@@ -166,27 +166,25 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 if (result != null) {
                     errorCode = result.getErrorCode();
                     errorMessage = result.getErrorMessage();
-                    stopStreamingSession();
-                } else {
-                    stopStreamingSession();
                 }
+                stopStreamingSession();
                 // send event to MessageBus
-                messageBus.post(new BroadpeakEvent.ErrorEvent(
-                        BroadpeakEvent.Type.ERROR,
-                        errorCode,
-                        errorMessage)
-                );
+                sendBroadpeakErrorEvent(errorCode, errorMessage);
             }
         } else {
             stopStreamingSession();
             errorMessage = BroadpeakError.InvalidMediaEntry.errorMessage;
             errorCode = BroadpeakError.InvalidMediaEntry.errorCode;
-            messageBus.post(new BroadpeakEvent.ErrorEvent(
-                    BroadpeakEvent.Type.ERROR,
-                    errorCode,
-                    errorMessage));
+            sendBroadpeakErrorEvent(errorCode, errorMessage);
         }
 
         listener.onComplete();
+    }
+
+    private void sendBroadpeakErrorEvent(int errorCode, String errorMessage) {
+        messageBus.post(new BroadpeakEvent.ErrorEvent(
+                BroadpeakEvent.Type.BROADPEAK_ERROR,
+                errorCode,
+                errorMessage));
     }
 }

@@ -27,7 +27,7 @@ public class BroadpeakEvent implements PKEvent {
     }
 
     public enum Type {
-        ERROR
+        BROADPEAK_ERROR
     }
 
     public static class ErrorEvent extends BroadpeakEvent {
