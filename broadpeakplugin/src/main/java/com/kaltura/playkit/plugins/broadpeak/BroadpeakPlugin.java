@@ -169,21 +169,22 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 }
                 stopStreamingSession();
                 // send event to MessageBus
-                messageBus.post(new BroadpeakEvent.ErrorEvent(
-                        BroadpeakEvent.Type.BROADPEAK_ERROR,
-                        errorCode,
-                        errorMessage));
+                sendBroadpeakErrorEvent(errorCode, errorMessage);
             }
         } else {
             stopStreamingSession();
             errorMessage = BroadpeakError.InvalidMediaEntry.errorMessage;
             errorCode = BroadpeakError.InvalidMediaEntry.errorCode;
-            messageBus.post(new BroadpeakEvent.ErrorEvent(
-                    BroadpeakEvent.Type.BROADPEAK_ERROR,
-                    errorCode,
-                    errorMessage));
+            sendBroadpeakErrorEvent(errorCode, errorMessage);
         }
 
         listener.onComplete();
+    }
+
+    private void sendBroadpeakErrorEvent(int errorCode, String errorMessage) {
+        messageBus.post(new BroadpeakEvent.ErrorEvent(
+                BroadpeakEvent.Type.BROADPEAK_ERROR,
+                errorCode,
+                errorMessage));
     }
 }
