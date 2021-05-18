@@ -146,7 +146,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         String errorMessage = BroadpeakError.Unknown.errorMessage;
 
         if (mediaEntry != null && mediaEntry.getSources() != null &&
-                !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
+                !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null &&
+                mediaEntry.getSources().get(0).getUrl() != null) {
 
             // Stop the session for fresh media entry
             if (session != null) {
@@ -157,6 +158,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             // Start the session and get the final stream URL
             session = SmartLib.getInstance().createStreamingSession();
             session.attachPlayer(player, messageBus);
+            if (session == null) {
+                stopStreamingSession();
+                sendBroadpeakErrorEvent(errorCode, errorMessage);
+                return;
+            }
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 // Replace the URL
