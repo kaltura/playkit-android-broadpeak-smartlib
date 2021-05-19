@@ -100,16 +100,22 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
         if (!this.config.equals(bpConfig)) {
-            log.d("Releasing SmartLib and initializing with updated configs");
             this.config = bpConfig;
-            stopStreamingSession();
-            SmartLib.getInstance().release();
+            restartSmartLib(bpConfig);
+        } else {
+            log.d("Previous and latest configs are same");
+        }
+    }
+
+    private void restartSmartLib(BroadpeakConfig bpConfig) {
+        log.d("Releasing SmartLib and initializing with updated configs");
+        stopStreamingSession();
+        SmartLib.getInstance().release();
+        if (bpConfig != null) {
             SmartLib.getInstance().init(context,
                     bpConfig.getAnalyticsAddress(),
                     bpConfig.getNanoCDNHost(),
                     bpConfig.getBroadpeakDomainNames());
-        } else {
-            log.d("Previous and latest configs are same");
         }
     }
 
@@ -152,20 +158,22 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
             // Stop the session for fresh media entry
             if (session != null) {
-                stopStreamingSession();
+                log.d("session != null -> restartSmartLib");
+                restartSmartLib(config);
             }
 
             PKMediaSource source = mediaEntry.getSources().get(0);
             // Start the session and get the final stream URL
             session = SmartLib.getInstance().createStreamingSession();
-            session.attachPlayer(player, messageBus);
             if (session == null) {
                 sendBroadpeakErrorEvent(errorCode, errorMessage);
                 return;
             }
+            session.attachPlayer(player, messageBus);
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 // Replace the URL
+                log.d("New URL = " + result.getURL());
                 source.setUrl(result.getURL());
             } else {
                 // Stop the session in case of error
