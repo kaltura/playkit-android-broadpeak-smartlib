@@ -1,6 +1,7 @@
 package com.kaltura.playkit.plugins.broadpeak;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.kaltura.playkit.BuildConfig;
 import com.kaltura.playkit.MessageBus;
@@ -147,7 +148,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
         if (mediaEntry != null && mediaEntry.getSources() != null &&
                 !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null &&
-                mediaEntry.getSources().get(0).getUrl() != null) {
+                !TextUtils.isEmpty(mediaEntry.getSources().get(0).getUrl())) {
 
             // Stop the session for fresh media entry
             if (session != null) {
