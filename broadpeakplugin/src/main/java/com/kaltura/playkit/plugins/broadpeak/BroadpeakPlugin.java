@@ -141,9 +141,9 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     }
 
     private void stopStreamingSession() {
+        log.d("stopStreamingSession");
         if (session != null) {
             session.stopStreamingSession();
-            session = null;
         }
     }
 
@@ -158,8 +158,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
             // Stop the session for fresh media entry
             if (session != null) {
-                log.d("session != null -> restartSmartLib");
-                restartSmartLib(config);
+                stopStreamingSession();
             }
 
             PKMediaSource source = mediaEntry.getSources().get(0);
