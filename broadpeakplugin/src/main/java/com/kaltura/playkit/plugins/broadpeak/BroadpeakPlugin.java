@@ -73,7 +73,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
         this.messageBus.addListener(this, PlayerEvent.error, event -> {
             if (PKError.Severity.Fatal.equals(event.error.severity)) {
-                log.e("PlayerEvent Fatal Error");
+                log.e("PlayerEvent Fatal Error " + event.error.message);
                 // Stop the session in case of Playback Error
                 stopStreamingSession();
             }
@@ -149,12 +149,14 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
     @Override
     public void apply(PKMediaEntry mediaEntry, PKMediaEntryInterceptor.Listener listener) {
+
         int errorCode = BroadpeakError.Unknown.errorCode;
         String errorMessage = BroadpeakError.Unknown.errorMessage;
 
         if (mediaEntry != null && mediaEntry.getSources() != null &&
                 !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null &&
                 !TextUtils.isEmpty(mediaEntry.getSources().get(0).getUrl())) {
+            log.d("Apply Entry " + mediaEntry.getName() + " - " + mediaEntry.getId() + " url: " + mediaEntry.getSources().get(0).getUrl());
 
             // Stop the session for fresh media entry
             if (session != null) {
@@ -172,7 +174,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 // Replace the URL
-                log.d("New URL = " + result.getURL());
+                log.d("Apply New Entry URL  " + mediaEntry.getName() + " - " + mediaEntry.getId() + " url: " + result.getURL());
+
                 source.setUrl(result.getURL());
             } else {
                 // Stop the session in case of error
