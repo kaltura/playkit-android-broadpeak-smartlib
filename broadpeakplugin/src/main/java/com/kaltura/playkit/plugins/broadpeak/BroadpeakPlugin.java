@@ -1,6 +1,7 @@
 package com.kaltura.playkit.plugins.broadpeak;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.kaltura.playkit.BuildConfig;
 import com.kaltura.playkit.MessageBus;
@@ -99,16 +100,22 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
 
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
         if (!this.config.equals(bpConfig)) {
-            log.d("Releasing SmartLib and initializing with updated configs");
             this.config = bpConfig;
-            stopStreamingSession();
-            SmartLib.getInstance().release();
+            restartSmartLib(bpConfig);
+        } else {
+            log.d("Previous and latest configs are same");
+        }
+    }
+
+    private void restartSmartLib(BroadpeakConfig bpConfig) {
+        log.d("Releasing SmartLib and initializing with updated configs");
+        stopStreamingSession();
+        SmartLib.getInstance().release();
+        if (bpConfig != null) {
             SmartLib.getInstance().init(context,
                     bpConfig.getAnalyticsAddress(),
                     bpConfig.getNanoCDNHost(),
                     bpConfig.getBroadpeakDomainNames());
-        } else {
-            log.d("Previous and latest configs are same");
         }
     }
 
@@ -134,9 +141,9 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     }
 
     private void stopStreamingSession() {
+        log.d("stopStreamingSession");
         if (session != null) {
             session.stopStreamingSession();
-            session = null;
         }
     }
 
@@ -146,7 +153,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         String errorMessage = BroadpeakError.Unknown.errorMessage;
 
         if (mediaEntry != null && mediaEntry.getSources() != null &&
-                !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null) {
+                !mediaEntry.getSources().isEmpty() && mediaEntry.getSources().get(0) != null &&
+                !TextUtils.isEmpty(mediaEntry.getSources().get(0).getUrl())) {
 
             // Stop the session for fresh media entry
             if (session != null) {
@@ -156,10 +164,15 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             PKMediaSource source = mediaEntry.getSources().get(0);
             // Start the session and get the final stream URL
             session = SmartLib.getInstance().createStreamingSession();
+            if (session == null) {
+                sendBroadpeakErrorEvent(errorCode, errorMessage);
+                return;
+            }
             session.attachPlayer(player, messageBus);
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 // Replace the URL
+                log.d("New URL = " + result.getURL());
                 source.setUrl(result.getURL());
             } else {
                 // Stop the session in case of error
