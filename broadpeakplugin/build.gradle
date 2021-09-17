@@ -26,7 +26,6 @@ android {
 }
 
 dependencies {
-
     // TODO: when tvplayer is released, replace this.
     api 'com.kaltura:kaltura-player-android:develop-SNAPSHOT'
     //api project(":tvplayer")
