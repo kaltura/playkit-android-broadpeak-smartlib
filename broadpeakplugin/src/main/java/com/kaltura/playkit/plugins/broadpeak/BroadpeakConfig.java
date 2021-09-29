@@ -8,6 +8,7 @@ public class BroadpeakConfig {
     private String analyticsAddress;
     private String nanoCDNHost;
     private String broadpeakDomainNames;
+    private String uuid;
 
     public String getAnalyticsAddress() {
         return analyticsAddress;
@@ -36,6 +37,15 @@ public class BroadpeakConfig {
         return this;
     }
 
+    public String getUUID() {
+        return uuid;
+    }
+
+    public BroadpeakConfig setUUID(String uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,18 +53,21 @@ public class BroadpeakConfig {
 
         BroadpeakConfig that = (BroadpeakConfig) o;
 
-        if (analyticsAddress != null ? !analyticsAddress.equals(that.analyticsAddress) : that.analyticsAddress != null)
+        if (getAnalyticsAddress() != null ? !getAnalyticsAddress().equals(that.getAnalyticsAddress()) : that.getAnalyticsAddress() != null)
             return false;
-        if (nanoCDNHost != null ? !nanoCDNHost.equals(that.nanoCDNHost) : that.nanoCDNHost != null)
+        if (getNanoCDNHost() != null ? !getNanoCDNHost().equals(that.getNanoCDNHost()) : that.getNanoCDNHost() != null)
             return false;
-        return broadpeakDomainNames != null ? broadpeakDomainNames.equals(that.broadpeakDomainNames) : that.broadpeakDomainNames == null;
+        if (getBroadpeakDomainNames() != null ? !getBroadpeakDomainNames().equals(that.getBroadpeakDomainNames()) : that.getBroadpeakDomainNames() != null)
+            return false;
+        return getUUID() != null ? getUUID().equals(that.getUUID()) : that.getUUID() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = analyticsAddress != null ? analyticsAddress.hashCode() : 0;
-        result = 31 * result + (nanoCDNHost != null ? nanoCDNHost.hashCode() : 0);
-        result = 31 * result + (broadpeakDomainNames != null ? broadpeakDomainNames.hashCode() : 0);
+        int result = getAnalyticsAddress() != null ? getAnalyticsAddress().hashCode() : 0;
+        result = 31 * result + (getNanoCDNHost() != null ? getNanoCDNHost().hashCode() : 0);
+        result = 31 * result + (getBroadpeakDomainNames() != null ? getBroadpeakDomainNames().hashCode() : 0);
+        result = 31 * result + (getUUID() != null ? getUUID().hashCode() : 0);
         return result;
     }
 }
