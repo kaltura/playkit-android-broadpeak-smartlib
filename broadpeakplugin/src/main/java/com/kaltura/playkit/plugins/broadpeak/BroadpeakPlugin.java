@@ -67,6 +67,10 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 bpConfig.getNanoCDNHost(),
                 bpConfig.getBroadpeakDomainNames());
 
+        if (!TextUtils.isEmpty(bpConfig.getUUID())) {
+            SmartLib.getInstance().setUUID(bpConfig.getUUID());
+        }
+
         this.player = player;
         this.messageBus = messageBus;
         this.context = context;
