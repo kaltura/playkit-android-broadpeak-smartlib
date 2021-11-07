@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.kaltura.playkit.BuildConfig;
+import com.kaltura.playkit.InterceptorEvent;
 import com.kaltura.playkit.MessageBus;
 import com.kaltura.playkit.PKError;
 import com.kaltura.playkit.PKLog;
@@ -177,10 +178,12 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             session.attachPlayer(player, messageBus);
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
+                sendSourceUrlSwitchedEvent(source, result);
+
                 // Replace the URL
                 log.d("Apply New Entry URL  " + mediaEntry.getName() + " - " + mediaEntry.getId() + " url: " + result.getURL());
-
                 source.setUrl(result.getURL());
+
             } else {
                 // Stop the session in case of error
                 if (result != null) {
@@ -199,6 +202,17 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         }
 
         listener.onComplete();
+    }
+
+    private void sendSourceUrlSwitchedEvent(PKMediaSource source, StreamingSessionResult result) {
+        String originalUrl = source.getUrl();
+        String updatedUrl = result.getURL();
+        if (!TextUtils.isEmpty(originalUrl) && !TextUtils.isEmpty(updatedUrl) && !originalUrl.equals(updatedUrl)) {
+            messageBus.post(new InterceptorEvent.SourceUrlSwitched(
+                    InterceptorEvent.Type.SOURCE_URL_SWITCHED,
+                    originalUrl,
+                    updatedUrl));
+        }
     }
 
     private void sendBroadpeakErrorEvent(int errorCode, String errorMessage) {
