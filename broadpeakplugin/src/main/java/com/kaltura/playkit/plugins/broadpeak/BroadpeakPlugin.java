@@ -60,6 +60,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             return;
         }
 
+        if (messageBus == null) {
+            log.e("Broadpeak messageBus == null");
+            return;
+        }
+
         BroadpeakConfig bpConfig = (BroadpeakConfig) config;
         this.config = bpConfig;
 
@@ -207,17 +212,21 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         String originalUrl = source.getUrl();
         String updatedUrl = result.getURL();
         if (!TextUtils.isEmpty(originalUrl) && !TextUtils.isEmpty(updatedUrl) && !originalUrl.equals(updatedUrl)) {
-            messageBus.post(new InterceptorEvent.SourceUrlSwitched(
-                    InterceptorEvent.Type.SOURCE_URL_SWITCHED,
-                    originalUrl,
-                    updatedUrl));
+            if (messageBus != null) {
+                messageBus.post(new InterceptorEvent.SourceUrlSwitched(
+                        InterceptorEvent.Type.SOURCE_URL_SWITCHED,
+                        originalUrl,
+                        updatedUrl));
+            }
         }
     }
 
     private void sendBroadpeakErrorEvent(int errorCode, String errorMessage) {
-        messageBus.post(new BroadpeakEvent.ErrorEvent(
-                BroadpeakEvent.Type.BROADPEAK_ERROR,
-                errorCode,
-                errorMessage));
+        if (messageBus != null) {
+            messageBus.post(new BroadpeakEvent.ErrorEvent(
+                    BroadpeakEvent.Type.BROADPEAK_ERROR,
+                    errorCode,
+                    errorMessage));
+        }
     }
 }
