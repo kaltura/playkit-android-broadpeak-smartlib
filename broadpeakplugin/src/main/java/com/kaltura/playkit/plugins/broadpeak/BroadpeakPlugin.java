@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.kaltura.playkit.BuildConfig;
+import com.kaltura.playkit.InterceptorEvent;
 import com.kaltura.playkit.MessageBus;
 import com.kaltura.playkit.PKError;
 import com.kaltura.playkit.PKLog;
@@ -56,6 +57,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     protected void onLoad(final Player player, Object config, final MessageBus messageBus, Context context) {
         if (!(config instanceof BroadpeakConfig)) {
             log.e("Broadpeak config is missing");
+            return;
+        }
+
+        if (messageBus == null) {
+            log.e("Broadpeak messageBus == null");
             return;
         }
 
@@ -177,9 +183,10 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             session.attachPlayer(player, messageBus);
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
+                sendSourceUrlSwitchedEvent(source, result);
+
                 // Replace the URL
                 log.d("Apply New Entry URL  " + mediaEntry.getName() + " - " + mediaEntry.getId() + " url: " + result.getURL());
-
                 source.setUrl(result.getURL());
             } else {
                 // Stop the session in case of error
@@ -201,10 +208,25 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         listener.onComplete();
     }
 
+    private void sendSourceUrlSwitchedEvent(PKMediaSource source, StreamingSessionResult result) {
+        String originalUrl = source.getUrl();
+        String updatedUrl = result.getURL();
+        if (!TextUtils.isEmpty(originalUrl) && !TextUtils.isEmpty(updatedUrl) && !originalUrl.equals(updatedUrl)) {
+            if (messageBus != null) {
+                messageBus.post(new InterceptorEvent.SourceUrlSwitched(
+                        InterceptorEvent.Type.SOURCE_URL_SWITCHED,
+                        originalUrl,
+                        updatedUrl));
+            }
+        }
+    }
+
     private void sendBroadpeakErrorEvent(int errorCode, String errorMessage) {
-        messageBus.post(new BroadpeakEvent.ErrorEvent(
-                BroadpeakEvent.Type.BROADPEAK_ERROR,
-                errorCode,
-                errorMessage));
+        if (messageBus != null) {
+            messageBus.post(new BroadpeakEvent.ErrorEvent(
+                    BroadpeakEvent.Type.BROADPEAK_ERROR,
+                    errorCode,
+                    errorMessage));
+        }
     }
 }
