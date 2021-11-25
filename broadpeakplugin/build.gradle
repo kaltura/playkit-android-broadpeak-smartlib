@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply from: 'version.gradle'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -15,6 +15,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 30
         versionName libVersion
+        buildConfigField("String","VERSION_NAME","\"${libVersion}\"")
     }
 
     buildTypes {
@@ -35,7 +36,6 @@ dependencies {
 
 repositories {
     google()
-    jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
 }
