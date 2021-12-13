@@ -15,7 +15,7 @@ First, add `Smartlib` repository with your credentials to your root `build.gradl
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {
             credentials {
                 username "username"
