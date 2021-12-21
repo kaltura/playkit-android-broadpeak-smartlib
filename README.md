@@ -37,7 +37,7 @@ Next, lets see how to use the **BroadpeakPlugin** in your application.
 
 ## Plugin Configurations
 
-Like Kaltura's other Playkit plugins, **BroadpeakPlugin** includes configurations that can be used by your application.
+Like Kaltura's other Playkit plugins, **Kaltura Plugin for Broadpeak SmartLib** includes configurations that can be used by your application.
 
 In the following code snippet, you can see how to configure **BroadpeakPlugin** with custom parameters. Below are detailed explanation of each field.
 
@@ -118,6 +118,32 @@ To obtain licensing information regarding the Broadpeak Materials, contact: http
 [Broadpeak®  SmartLib]
 Copyright © 2020–2021 Broadpeak, S.A.S.
 All Rights Reserved
-
+ 
 This program contains proprietary information, which is confidential and
 trade secret of Broadpeak, SAS.
+ 
+It is protected by intellectual property as an unpublished work under
+applicable Copyright laws and international conventions.
+ 
+Certain functionalities and/or features of such program may also be subject
+to some patent and pending patent applications.
+ 
+Broadpeak® is registered trademark and trade name of Broadpeak, S.A.S., and
+shall not be used in any manner without express written from Broadpeak, S.A.S.
+ 
+Unless expressly otherwise agreed in writing by Broadpeak, such as under
+commercial agreement executed by authorized representative of Broadpeak,
+the use of the program and its documentation is strictly limited to
+your own internal evaluation of such program and its functionalities for
+potential collaboration with Broadpeak. Recipient shall retain this program,
+documentations, and materials in confidence and is not allowed to make
+any copy, decompile, reverse engineer, disassemble, and attempt to derive
+the source code of, modify, or create derivative works of the program, any
+update, or any part thereof, other than as expressly permitted or expressly
+made mandatory by applicable laws.
+ 
+Any attempt to do so is a violation of the rights of Broadpeak. If you or
+any person under your control or authority breach this restriction, you may
+be subject to prosecution and damages.
+ 
+Contact: https://broadpeak.tv/form/contact-broadpeak/
