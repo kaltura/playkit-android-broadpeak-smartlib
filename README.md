@@ -3,12 +3,12 @@
 [![License](https://img.shields.io/badge/license-AGPLv3-black.svg)](https://github.com/kaltura/playkit-android/blob/master/LICENSE)
 ![Android](https://img.shields.io/badge/platform-android-green.svg)
 
-# Broadpeak plugin for Kaltura Player on Android
+# Kaltura plugin for Broadpeak SmartLib for Kaltura Player on Android
 
-## About Broapeak plugin
+## About Kaltura Plugin for Broadpeak SmartLib
 Broadpeak plugin is designed for integration a [Broadpeak service](https://broadpeak.tv/)
 
-## BroadpeakPlugin Integration
+## Kaltura Plugin for Broadpeak SmartLib Integration
 The easiest way to get the **BroadpeakPlugin** is to add it as a Gradle dependency.
 First, add `Smartlib` repository with your credentials to your root `build.gradle`
 ```Groovy
@@ -108,3 +108,16 @@ All code in this project is released under the [AGPLv3 license](http://www.gnu.o
 
 Copyright © Kaltura Inc. All rights reserved.   
 Authors and contributors: See [GitHub contributors list](https://github.com/kaltura/playkit-android-broadpeak-smartlib/graphs/contributors).
+
+Broadpeak SmartLib libraries the Broadpeak SDK, and all associated APIs,  and header files (collectively, the “Broadpeak Materials”) are the exclusive property of Broadpeak and subject to Broadpeak license terms.
+Notwithstanding anything to the contrary stated in this repository, Kaltura, as copyright holder on the Plug in program, hereby 
+(i)	confirms that the Broadpeak Materials is an independent program and set of materials, and are not licensed under nor intended to be otherwise subject to the AGPL-3.0 license nor any other open source license, but used only under the terms of Broadpeak license  and ;
+(ii)	gives express permission, as a special exception to AGPL license terms, to link such AGPL code or portion of this code, with the Broadpeak Materials or any part thereof, regardless of the license terms of the AGPL code, and to produce an executable, copy and distribute the resulting executable, provided that you also mee the applicable license terms and conditions of the Broadpeak Materials and the AGPL code;  
+To obtain licensing information regarding the Broadpeak Materials, contact: https://broadpeak.tv/form/contact-broadpeak/ 
+
+[Broadpeak®  SmartLib]
+Copyright © 2020–2021 Broadpeak, S.A.S.
+All Rights Reserved
+
+This program contains proprietary information, which is confidential and
+trade secret of Broadpeak, SAS.
