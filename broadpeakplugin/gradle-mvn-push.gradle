@@ -44,8 +44,7 @@ afterEvaluate { project ->
                             password getRepositoryPassword()
                         }
                     }
-                }
-                
+                }             
                 pom {
                     name = POM_NAME
                     packaging = POM_PACKAGING
