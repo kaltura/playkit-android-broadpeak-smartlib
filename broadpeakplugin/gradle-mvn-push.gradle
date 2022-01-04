@@ -45,6 +45,7 @@ afterEvaluate { project ->
                         }
                     }
                 }
+                
                 pom {
                     name = POM_NAME
                     packaging = POM_PACKAGING
