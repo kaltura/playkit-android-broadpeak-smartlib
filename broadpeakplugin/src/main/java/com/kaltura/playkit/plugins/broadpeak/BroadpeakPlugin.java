@@ -16,6 +16,8 @@ import com.kaltura.playkit.Player;
 import com.kaltura.playkit.PlayerEvent;
 import com.kaltura.tvplayer.PKMediaEntryInterceptor;
 
+import java.util.Map;
+
 import tv.broadpeak.smartlib.SmartLib;
 import tv.broadpeak.smartlib.session.streaming.StreamingSession;
 import tv.broadpeak.smartlib.session.streaming.StreamingSessionResult;
@@ -73,10 +75,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 bpConfig.getNanoCDNHost(),
                 bpConfig.getBroadpeakDomainNames());
 
-        if (!TextUtils.isEmpty(bpConfig.getUUID())) {
-            SmartLib.getInstance().setUUID(bpConfig.getUUID());
-        }
-
+        addGeneralConfig(bpConfig);
+        
         this.player = player;
         this.messageBus = messageBus;
         this.context = context;
@@ -88,6 +88,28 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 stopStreamingSession();
             }
         });
+    }
+
+    private void addGeneralConfig(BroadpeakConfig bpConfig) {
+        if (!TextUtils.isEmpty(bpConfig.getUUID())) {
+            SmartLib.getInstance().setUUID(bpConfig.getUUID());
+        }
+
+        if (!TextUtils.isEmpty(bpConfig.getDeviceType())) {
+            SmartLib.getInstance().setDeviceType(bpConfig.getDeviceType());
+        }
+
+        if (!TextUtils.isEmpty(bpConfig.getUserAgent())) {
+            SmartLib.getInstance().setUserAgent(bpConfig.getUserAgent());
+        }
+
+        if (bpConfig.getNanoCDNResolvingRetryDelay() != null) {
+            SmartLib.getInstance().setNanoCDNResolvingRetryDelay(bpConfig.getNanoCDNResolvingRetryDelay());
+        }
+
+        if (bpConfig.getNanoCDNHttpsEnabled() != null) {
+            SmartLib.getInstance().setNanoCDNHttpsEnabled(bpConfig.getNanoCDNHttpsEnabled());
+        }
     }
 
     @Override
@@ -126,6 +148,8 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                     bpConfig.getAnalyticsAddress(),
                     bpConfig.getNanoCDNHost(),
                     bpConfig.getBroadpeakDomainNames());
+
+            addGeneralConfig(bpConfig);
         }
     }
 
@@ -180,7 +204,10 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 sendBroadpeakErrorEvent(errorCode, errorMessage);
                 return;
             }
+
+            addSessionConfig();
             session.attachPlayer(player, messageBus);
+
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 sendSourceUrlSwitchedEvent(source, result);
@@ -206,6 +233,52 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         }
 
         listener.onComplete();
+    }
+
+    private void addSessionConfig() {
+        if (!TextUtils.isEmpty(config.getAdCustomReference())) {
+            session.setAdCustomReference(config.getAdCustomReference());
+        }
+        
+        if (config.getAdParameters() != null) {
+            for (Map.Entry<String, String> entry : config.getAdParameters().entrySet()) {
+                if (entry != null && entry.getKey() != null) {
+                    session.setAdParameter(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        if (config.getCustomParameters() != null) {
+            for (Map.Entry<String, String> entry : config.getCustomParameters().entrySet()) {
+                if (entry != null && entry.getKey() != null) {
+                    session.setCustomParameter(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        if (config.getStringOptions() != null) {
+            for (Map.Entry<Integer, String> entry : config.getStringOptions().entrySet()) {
+                if (entry != null && entry.getKey() != null) {
+                    session.setOption(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        if (config.getIntegerOptions() != null) {
+            for (Map.Entry<Integer, Integer> entry : config.getIntegerOptions().entrySet()) {
+                if (entry != null && entry.getKey() != null) {
+                    session.setOption(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        if (config.getStringOptions() != null) {
+            for (Map.Entry<Integer, Boolean> entry : config.getBooleanOptions().entrySet()) {
+                if (entry != null && entry.getKey() != null) {
+                    session.setOption(entry.getKey(), entry.getValue());
+                }
+            }
+        }
     }
 
     private void sendSourceUrlSwitchedEvent(PKMediaSource source, StreamingSessionResult result) {
