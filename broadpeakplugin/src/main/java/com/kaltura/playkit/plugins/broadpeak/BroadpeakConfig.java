@@ -19,9 +19,7 @@ public class BroadpeakConfig {
     private String adCustomReference;
     private Map<String, String> adParameters;
     private Map<String, String> customParameters;
-    private Map<Integer, String> stringOptions;
-    private Map<Integer, Integer> integerOptions;
-    private Map<Integer, Boolean> booleanOptions;
+    private Map<Integer, Object> options;
 
     public String getAnalyticsAddress() {
         return analyticsAddress;
@@ -126,30 +124,12 @@ public class BroadpeakConfig {
         return this;
     }
 
-    public Map<Integer, String> getStringOptions() {
-        return stringOptions;
+    public Map<Integer, Object> getOptions() {
+        return options;
     }
 
-    public BroadpeakConfig setStringOptions(Map<Integer, String> stringOptions) {
-        this.stringOptions = stringOptions;
-        return this;
-    }
-
-    public Map<Integer, Integer> getIntegerOptions() {
-        return integerOptions;
-    }
-
-    public BroadpeakConfig setIntegerOptions(Map<Integer, Integer> integerOptions) {
-        this.integerOptions = integerOptions;
-        return this;
-    }
-
-    public Map<Integer, Boolean> getBooleanOptions() {
-        return booleanOptions;
-    }
-
-    public BroadpeakConfig setBooleanOptions(Map<Integer, Boolean> booleanOptions) {
-        this.booleanOptions = booleanOptions;
+    public BroadpeakConfig setOptions(Map<Integer, Object> options) {
+        this.options = options;
         return this;
     }
 
@@ -182,11 +162,7 @@ public class BroadpeakConfig {
             return false;
         if (getCustomParameters() != null ? !getCustomParameters().equals(that.getCustomParameters()) : that.getCustomParameters() != null)
             return false;
-        if (getStringOptions() != null ? !getStringOptions().equals(that.getStringOptions()) : that.getStringOptions() != null)
-            return false;
-        if (getIntegerOptions() != null ? !getIntegerOptions().equals(that.getIntegerOptions()) : that.getIntegerOptions() != null)
-            return false;
-        return getBooleanOptions() != null ? getBooleanOptions().equals(that.getBooleanOptions()) : that.getBooleanOptions() == null;
+        return getOptions() != null ? getOptions().equals(that.getOptions()) : that.getOptions() == null;
     }
 
     @Override
@@ -202,9 +178,7 @@ public class BroadpeakConfig {
         result = 31 * result + (getAdCustomReference() != null ? getAdCustomReference().hashCode() : 0);
         result = 31 * result + (getAdParameters() != null ? getAdParameters().hashCode() : 0);
         result = 31 * result + (getCustomParameters() != null ? getCustomParameters().hashCode() : 0);
-        result = 31 * result + (getStringOptions() != null ? getStringOptions().hashCode() : 0);
-        result = 31 * result + (getIntegerOptions() != null ? getIntegerOptions().hashCode() : 0);
-        result = 31 * result + (getBooleanOptions() != null ? getBooleanOptions().hashCode() : 0);
+        result = 31 * result + (getOptions() != null ? getOptions().hashCode() : 0);
         return result;
     }
 

@@ -256,26 +256,16 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             }
         }
 
-        if (config.getStringOptions() != null) {
-            for (Map.Entry<Integer, String> entry : config.getStringOptions().entrySet()) {
+        if (config.getOptions() != null) {
+            for (Map.Entry<Integer, Object> entry : config.getOptions().entrySet()) {
                 if (entry != null && entry.getKey() != null) {
-                    session.setOption(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-
-        if (config.getIntegerOptions() != null) {
-            for (Map.Entry<Integer, Integer> entry : config.getIntegerOptions().entrySet()) {
-                if (entry != null && entry.getKey() != null) {
-                    session.setOption(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-
-        if (config.getStringOptions() != null) {
-            for (Map.Entry<Integer, Boolean> entry : config.getBooleanOptions().entrySet()) {
-                if (entry != null && entry.getKey() != null) {
-                    session.setOption(entry.getKey(), entry.getValue());
+                    if (entry.getValue() instanceof Integer) {
+                        session.setOption(entry.getKey(), (int) entry.getValue());
+                    } else if (entry.getValue() instanceof Boolean) {
+                        session.setOption(entry.getKey(), (boolean) entry.getValue());
+                    } else if (entry.getValue() instanceof String) {
+                        session.setOption(entry.getKey(), entry.getValue().toString());
+                    }
                 }
             }
         }
