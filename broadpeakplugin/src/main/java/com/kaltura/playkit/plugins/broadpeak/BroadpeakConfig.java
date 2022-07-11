@@ -152,7 +152,8 @@ public class BroadpeakConfig {
             return false;
         if (getBroadpeakDomainNames() != null ? !getBroadpeakDomainNames().equals(that.getBroadpeakDomainNames()) : that.getBroadpeakDomainNames() != null)
             return false;
-        if (getUUID() != null ? !getUUID() .equals(that.getUUID() ) : that.getUUID()  != null) return false;
+        if (getUUID() != null ? !getUUID().equals(that.getUUID()) : that.getUUID() != null)
+            return false;
         if (getDeviceType() != null ? !getDeviceType().equals(that.getDeviceType()) : that.getDeviceType() != null)
             return false;
         if (getUserAgent() != null ? !getUserAgent().equals(that.getUserAgent()) : that.getUserAgent() != null)
