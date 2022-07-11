@@ -13,7 +13,7 @@ public class BroadpeakConfig {
     private String uuid;
     private String deviceType;
     private String userAgent;
-    private Integer nanoCDNResolvingRetryDelay;
+    private Integer nanoCDNResolvingRetryDelay; // In miliseconds
     private Boolean nanoCDNHttpsEnabled;
 
     private String adCustomReference;
@@ -63,80 +63,94 @@ public class BroadpeakConfig {
         return deviceType;
     }
 
-    public void setDeviceType(String deviceType) {
+    public BroadpeakConfig setDeviceType(String deviceType) {
         this.deviceType = deviceType;
+        return this;
     }
 
     public String getUserAgent() {
         return userAgent;
     }
 
-    public void setUserAgent(String userAgent) {
+    public BroadpeakConfig setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+        return this;
     }
 
     public Integer getNanoCDNResolvingRetryDelay() {
         return nanoCDNResolvingRetryDelay;
     }
 
-    public void setNanoCDNResolvingRetryDelay(Integer nanoCDNResolvingRetryDelay) {
+    /**
+     * Set the delay to resolve the nanoCDN
+     * Set the value in milliseconds, the minimum value is 1000.
+     */
+    public BroadpeakConfig setNanoCDNResolvingRetryDelay(Integer nanoCDNResolvingRetryDelay) {
         this.nanoCDNResolvingRetryDelay = nanoCDNResolvingRetryDelay;
+        return this;
     }
 
     public Boolean getNanoCDNHttpsEnabled() {
         return nanoCDNHttpsEnabled;
     }
 
-    public void setNanoCDNHttpsEnabled(Boolean nanoCDNHttpsEnabled) {
+    public BroadpeakConfig setNanoCDNHttpsEnabled(Boolean nanoCDNHttpsEnabled) {
         this.nanoCDNHttpsEnabled = nanoCDNHttpsEnabled;
+        return this;
     }
 
     public String getAdCustomReference() {
         return adCustomReference;
     }
 
-    public void setAdCustomReference(String adCustomReference) {
+    public BroadpeakConfig setAdCustomReference(String adCustomReference) {
         this.adCustomReference = adCustomReference;
+        return this;
     }
 
     public Map<String, String> getAdParameters() {
         return adParameters;
     }
 
-    public void setAdParameters(Map<String, String> adParameters) {
+    public BroadpeakConfig setAdParameters(Map<String, String> adParameters) {
         this.adParameters = adParameters;
+        return this;
     }
 
     public Map<String, String> getCustomParameters() {
         return customParameters;
     }
 
-    public void setCustomParameters(Map<String, String> customParameters) {
+    public BroadpeakConfig setCustomParameters(Map<String, String> customParameters) {
         this.customParameters = customParameters;
+        return this;
     }
 
     public Map<Integer, String> getStringOptions() {
         return stringOptions;
     }
 
-    public void setStringOptions(Map<Integer, String> stringOptions) {
+    public BroadpeakConfig setStringOptions(Map<Integer, String> stringOptions) {
         this.stringOptions = stringOptions;
+        return this;
     }
 
     public Map<Integer, Integer> getIntegerOptions() {
         return integerOptions;
     }
 
-    public void setIntegerOptions(Map<Integer, Integer> integerOptions) {
+    public BroadpeakConfig setIntegerOptions(Map<Integer, Integer> integerOptions) {
         this.integerOptions = integerOptions;
+        return this;
     }
 
     public Map<Integer, Boolean> getBooleanOptions() {
         return booleanOptions;
     }
 
-    public void setBooleanOptions(Map<Integer, Boolean> booleanOptions) {
+    public BroadpeakConfig setBooleanOptions(Map<Integer, Boolean> booleanOptions) {
         this.booleanOptions = booleanOptions;
+        return this;
     }
 
     @Override
