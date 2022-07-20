@@ -80,8 +80,9 @@ public class BroadpeakConfig {
     }
 
     /**
-     * Set the delay to resolve the nanoCDN
+     * Set the delay to resolve the nanoCDN. Default is 60000ms.
      * Set the value in milliseconds, the minimum value is 1000.
+     * Set -1 to disable the retry mechanism
      */
     public BroadpeakConfig setNanoCDNResolvingRetryDelay(Integer nanoCDNResolvingRetryDelay) {
         this.nanoCDNResolvingRetryDelay = nanoCDNResolvingRetryDelay;
