@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply from: 'version.gradle'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -12,8 +12,8 @@ android {
         abortOnError false
     }
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 19
+        targetSdkVersion 33
         versionName libVersion
         buildConfigField("String","VERSION_NAME","\"${libVersion}\"")
     }
