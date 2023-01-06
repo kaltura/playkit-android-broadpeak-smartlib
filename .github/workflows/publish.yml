@@ -29,6 +29,8 @@ env:
   SIGNING_KEYID: ${{ secrets.SIGNING_KEY_ID }}
   SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
   MODULE_NAME: ${{ secrets.MODULE_NAME }}
+  BROADPEAK_USERNAME: ${{ secrets.BROADPEAK_USERNAME }}
+  BROADPEAK_PASSWORD: ${{ secrets.BROADPEAK_PASSWORD }}
 
 jobs:
   build:

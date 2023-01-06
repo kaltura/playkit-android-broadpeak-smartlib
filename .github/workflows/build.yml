@@ -11,6 +11,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  BROADPEAK_USERNAME: ${{ secrets.BROADPEAK_USERNAME }}
+  BROADPEAK_PASSWORD: ${{ secrets.BROADPEAK_PASSWORD }}
+
 jobs:
   gradle-build:
     environment: Build
