@@ -28,11 +28,7 @@ allprojects {
         google()
         mavenCentral()
         maven {
-            credentials {
-                username System.getenv("BROADPEAK_USERNAME")
-                password System.getenv("BROADPEAK_PASSWORD")
-            }
-            url "https://delivery-platform.broadpeak.tv/android/repository/smartlib"
+            url "https://delivery-platform.broadpeak.tv/android/repository/all"
         }
         maven { url "https://jitpack.io" }
     }
