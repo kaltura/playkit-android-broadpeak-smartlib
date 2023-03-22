@@ -10,6 +10,7 @@ import com.kaltura.playkit.PKError;
 import com.kaltura.playkit.PKLog;
 import com.kaltura.playkit.PKMediaConfig;
 import com.kaltura.playkit.PKMediaEntry;
+import com.kaltura.playkit.PKMediaFormat;
 import com.kaltura.playkit.PKMediaSource;
 import com.kaltura.playkit.PKPlugin;
 import com.kaltura.playkit.Player;
@@ -198,6 +199,13 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
             }
 
             PKMediaSource source = mediaEntry.getSources().get(0);
+            if (PKMediaFormat.udp.equals(source.getMediaFormat())) {
+                // Replace the URL
+                log.d("Apply New Entry URL for UDP: " + mediaEntry.getName() + " - " + mediaEntry.getId() + " url: " + source.getUrl());
+                source.setUrl(source.getUrl());
+                listener.onComplete();
+                return;
+            }
             // Start the session and get the final stream URL
             session = SmartLib.getInstance().createStreamingSession();
             if (session == null) {
