@@ -89,6 +89,11 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 stopStreamingSession();
             }
         });
+        this.messageBus.addListener(this, PlayerEvent.stopped, event -> {
+            log.e("PlayerEvent stopped, stopping broadpeak session");
+            // Stop the session in case of Playback Error
+            stopStreamingSession();
+        });
     }
 
     private void addGeneralConfig(BroadpeakConfig bpConfig) {
