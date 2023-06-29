@@ -31,6 +31,8 @@ Next, add the **BroadpeakPlugin** dependency to the `build.gradle` file of your 
 implementation 'com.kaltura.playkit:broadpeakplugin:4.x.x'
 ```
 
+* The broadpeak SDK version can be found [here](https://delivery-platform.broadpeak.tv/smartlib/public/project-setup/#android)
+
 This dependency includes **com.kaltura.player:tvplayer** internally, so no need to add them to the client app's `build.gradle`.
 
 Next, lets see how to use the **BroadpeakPlugin** in your application.
