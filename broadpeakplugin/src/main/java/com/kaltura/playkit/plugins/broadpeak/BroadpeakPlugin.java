@@ -228,7 +228,6 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 sendBroadpeakErrorEvent(errorCode, errorMessage);
                 return;
             }
-            sessionsMap.put(source.getUrl(), session);
 
             addSessionConfig(session);
             session.attachPlayer(player, messageBus);
@@ -238,7 +237,6 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 sendSourceUrlSwitchedEvent(source, result);
 
                 // Replace the URL
-                sessionsMap.remove(source.getUrl());
                 log.d("Apply New Entry URL  " + mediaEntry.getName() + " - " + mediaEntry.getId() + " url: " + result.getURL());
                 source.setUrl(result.getURL());
                 sessionsMap.put(source.getUrl(), session);
@@ -248,7 +246,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                     errorCode = result.getErrorCode();
                     errorMessage = result.getErrorMessage();
                 }
-                stopStreamingSession(source.getUrl());
+                session.stopStreamingSession();
                 // send event to MessageBus
                 sendBroadpeakErrorEvent(errorCode, errorMessage);
             }
