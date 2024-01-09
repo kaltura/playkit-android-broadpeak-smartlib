@@ -238,8 +238,10 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 sendSourceUrlSwitchedEvent(source, result);
 
                 // Replace the URL
+                sessionsMap.remove(source.getUrl());
                 log.d("Apply New Entry URL  " + mediaEntry.getName() + " - " + mediaEntry.getId() + " url: " + result.getURL());
                 source.setUrl(result.getURL());
+                sessionsMap.put(source.getUrl(), session);
             } else {
                 // Stop the session in case of error
                 if (result != null) {
