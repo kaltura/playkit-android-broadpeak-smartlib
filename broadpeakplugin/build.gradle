@@ -12,7 +12,7 @@ android {
         abortOnError false
     }
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
         versionName libVersion
         buildConfigField("String","VERSION_NAME","\"${libVersion}\"")
