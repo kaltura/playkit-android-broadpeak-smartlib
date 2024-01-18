@@ -12,7 +12,7 @@ android {
         abortOnError false
     }
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
         versionName libVersion
         buildConfigField("String","VERSION_NAME","\"${libVersion}\"")
@@ -31,7 +31,7 @@ dependencies {
     // TODO: when tvplayer is released, replace this.
     api 'com.kaltura:kaltura-player-android:develop-SNAPSHOT'
     //api project(":tvplayer")
-    api 'tv.broadpeak.smartlib:smartlib-kaltura:04.03.02.2891ea7'
+    api 'tv.broadpeak.smartlib:smartlib-kaltura:04.06.04.4179b2e'
 }
 
 repositories {
