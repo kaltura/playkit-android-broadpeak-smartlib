@@ -344,6 +344,10 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                         session.setOption(entry.getKey(), (boolean) entry.getValue());
                     } else if (entry.getValue() instanceof String) {
                         session.setOption(entry.getKey(), entry.getValue().toString());
+                    } else if (entry.getValue() instanceof  Float) {
+                        session.setOption(entry.getKey(), ((Float) entry.getValue()).intValue());
+                    } else if (entry.getValue() instanceof  Double) {
+                        session.setOption(entry.getKey(), ((Double) entry.getValue()).intValue());
                     }
                 }
             }
