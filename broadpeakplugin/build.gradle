@@ -31,7 +31,7 @@ dependencies {
     // TODO: when tvplayer is released, replace this.
     api 'com.kaltura:kaltura-player-android:develop-SNAPSHOT'
     //api project(":tvplayer")
-    api 'tv.broadpeak.smartlib:smartlib-kaltura:04.06.04.4179b2e'
+    api 'tv.broadpeak.smartlib:smartlib-kaltura:04.07.01.4334a05'
 }
 
 repositories {
