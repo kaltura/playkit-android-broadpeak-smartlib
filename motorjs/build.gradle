@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('motorjs-01.00.00.0167.aar'))
