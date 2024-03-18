@@ -33,7 +33,9 @@ dependencies {
     //api project(":tvplayer")
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10"
     api "androidx.annotation:annotation:1.3.0"
-    api fileTree(include: ['*.aar'], dir: 'libs/broadpeak')
+    api project(":motorjs")
+    api project(":smartlib-common")
+    api project(":smartlib-kaltura")
 }
 
 repositories {
