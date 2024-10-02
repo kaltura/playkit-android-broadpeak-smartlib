@@ -3,7 +3,8 @@ apply plugin: 'kotlin-android'
 apply from: 'version.gradle'
 
 android {
-    compileSdkVersion 33
+    namespace 'com.kaltura.playkit.plugin.broadpeak'
+    compileSdk 34
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -13,11 +14,19 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionName libVersion
         buildConfigField("String","VERSION_NAME","\"${libVersion}\"")
     }
-
+    buildFeatures {
+        buildConfig true
+    }
+    publishing {
+        publishing {
+            singleVariant('release') {
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -29,7 +38,7 @@ android {
 dependencies {
     
     // TODO: when tvplayer is released, replace this.
-    api 'com.kaltura:kaltura-player-android:develop-SNAPSHOT'
+    api 'com.kaltura:kaltura-player-android:KUX-1761-SNAPSHOT'
     //api project(":tvplayer")
     api 'tv.broadpeak.smartlib:smartlib-kaltura:04.07.01.4334a05'
 }
