@@ -1,5 +1,6 @@
 package com.kaltura.playkit.plugins.broadpeak;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -70,7 +71,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     };
 
     @Override
-    protected void onLoad(final Player player, Object config, final MessageBus messageBus, Context context) {
+    protected void onLoad(final Player player, Object config, final MessageBus messageBus, Context context, Activity playerActivity) {
         if (!(config instanceof BroadpeakConfig)) {
             log.e("Broadpeak config is missing");
             return;
