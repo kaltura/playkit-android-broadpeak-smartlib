@@ -33,6 +33,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
@@ -40,7 +43,9 @@ dependencies {
     // TODO: when tvplayer is released, replace this.
     api 'com.kaltura:kaltura-player-android:develop-SNAPSHOT'
     //api project(":tvplayer")
-    api 'tv.broadpeak.smartlib:smartlib-kaltura:04.07.01.4334a05'
+    //api 'tv.broadpeak.smartlib:smartlib-kaltura:04.07.01.4334a05'
+    api 'tv.broadpeak.smartlib:smartlib-kaltura:05.01.05.6a7afaf'
+    api 'tv.broadpeak.smartlib:smartlib-media3:05.01.05.6a7afaf'
 }
 
 repositories {

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.kaltura.playkit.BuildConfig;
 import com.kaltura.playkit.InterceptorEvent;
 import com.kaltura.playkit.MessageBus;
@@ -16,6 +18,7 @@ import com.kaltura.playkit.PKMediaSource;
 import com.kaltura.playkit.PKPlugin;
 import com.kaltura.playkit.Player;
 import com.kaltura.playkit.PlayerEvent;
+import com.kaltura.playkit.player.simid.SimidControllerProxy;
 import com.kaltura.tvplayer.PKMediaEntryInterceptor;
 
 import java.util.ArrayList;
@@ -24,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 import tv.broadpeak.smartlib.SmartLib;
+import tv.broadpeak.smartlib.ad.AdBreakData;
+import tv.broadpeak.smartlib.ad.AdData;
+import tv.broadpeak.smartlib.ad.AdManager;
+import tv.broadpeak.smartlib.ad.simid.GenericSimidControllerApi;
 import tv.broadpeak.smartlib.session.streaming.StreamingSession;
 import tv.broadpeak.smartlib.session.streaming.StreamingSessionResult;
 
@@ -38,6 +45,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     private Player player;
     private BroadpeakConfig config;
     private Context context;
+    private BpkSimidController bpkSimidController = new BpkSimidController();
 
     static class StreamingSessionInfo {
         private final StreamingSession session;
@@ -69,6 +77,24 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
         public void warmUp(Context context) {
         }
     };
+
+    static class BpkSimidController extends GenericSimidControllerApi implements SimidControllerProxy {
+        @NonNull
+        @Override
+        public String getSimidControllerName() {
+            return "Bpk SIMID Controller";
+        }
+
+        @Override
+        public void receiveMessage(String messageStr) {
+            super.onMessageReceived(messageStr);
+        }
+
+        @Override
+        public void postMessage(String messageStr) {
+            super.onMessageSent(messageStr);
+        }
+    }
 
     @Override
     protected void onLoad(final Player player, Object config, final MessageBus messageBus, Context context, Activity playerActivity) {
@@ -234,7 +260,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     }
 
     private void onUpdateMediaReceivedForStreamingSession(String currentSession) {
-        log.d("cleanupStreamingSessions called with currentSession=[" + currentSession + "]");
+        log.d("onUpdateMediaReceivedForStreamingSession called with currentSession=[" + currentSession + "]");
         if (currentSession != null && sessionsMap.containsKey(currentSession)) {
             StreamingSessionInfo sessionInfo = sessionsMap.get(currentSession);
             if (sessionInfo != null) {
@@ -244,6 +270,7 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
     }
 
     private void cleanupRunningStreamingSessions(String currentSession) {
+        log.d("cleanupStreamingSessions called with currentSession=[" + currentSession + "]");
         List<String> cleanedUpSessions = new ArrayList<>();
         for (Map.Entry<String, StreamingSessionInfo> sessionEntry : sessionsMap.entrySet()) {
             if (!sessionEntry.getKey().equals(currentSession)) {
@@ -284,9 +311,49 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                 return;
             }
 
+            session.activateAdvertising();
+            session.setAdEventsListener(new AdManager.AdEventsListener() {
+
+                @Override
+                public void onPrepareAdBreak(AdBreakData adBreak) {
+                }
+
+                @Override
+                public void onAdBreakBegin(AdBreakData adBreakData) {
+                }
+
+                @Override
+                public void onPrepareAd(AdData adData, AdBreakData adBreakData) {
+                }
+
+                @Override
+                public void onAdBegin(AdData adData, AdBreakData adBreakData) {
+                    if (!adData.getNonLinearIframeResources().isEmpty()) {
+                        sendBroadpeakAdBeginEvent(adData.getNonLinearIframeResources().get(0).getUrl(),
+                                adData.getNonLinearIframeResources().get(0).getParameters(),
+                                adData.getStartPosition(),
+                                adData.getDuration());
+                    }
+                }
+
+                @Override
+                public void onAdSkippable(AdData adData, AdBreakData adBreakData, long l, long l1, long l2) {
+                }
+
+                @Override
+                public void onAdEnd(AdData adData, AdBreakData adBreakData) {
+                    sendBroadpeakAdEndEvent();
+                }
+
+                @Override
+                public void onAdBreakEnd(AdBreakData adBreakData) {
+                }
+            });
+
             addSessionConfig(session);
             session.attachPlayer(player, messageBus);
 
+            session.attachSimidController(bpkSimidController);
             StreamingSessionResult result = session.getURL(source.getUrl());
             if (result != null && !result.isError()) {
                 sendSourceUrlSwitchedEvent(source, result);
@@ -370,6 +437,23 @@ public class BroadpeakPlugin extends PKPlugin implements PKMediaEntryInterceptor
                     BroadpeakEvent.Type.BROADPEAK_ERROR,
                     errorCode,
                     errorMessage));
+        }
+    }
+
+    private void sendBroadpeakAdBeginEvent(String creativeUri, String adParameters, long adStartPosition, long adDuration) {
+        if (messageBus != null) {
+            messageBus.post(new PlayerEvent.SimidAdBeginEvent(
+                    bpkSimidController,
+                    creativeUri,
+                    adParameters,
+                    adStartPosition,
+                    adDuration));
+        }
+    }
+
+    private void sendBroadpeakAdEndEvent() {
+        if (messageBus != null) {
+            messageBus.post(new PlayerEvent.SimidAdEndEvent());
         }
     }
 }
