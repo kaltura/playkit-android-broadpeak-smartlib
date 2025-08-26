@@ -1,4 +1,7 @@
 include ':broadpeakplugin'
+include ':motorjs'
+include ':smartlib-common'
+include ':smartlib-kaltura'
 //include ':tvplayer'
 //project(':tvplayer').projectDir = new File(settingsDir, '../kaltura-player-android/tvplayer')
 //include ':playkit'
