@@ -41,7 +41,7 @@ android {
 dependencies {
     
     // TODO: when tvplayer is released, replace this.
-    api 'com.kaltura:kaltura-player-android:PLAYEROTT-56-SNAPSHOT'
+    api 'com.kaltura.player:tvplayer:5.0.2-rc4-simid'
     //api project(":tvplayer")
     //api 'tv.broadpeak.smartlib:smartlib-kaltura:04.07.01.4334a05'
     api 'tv.broadpeak.smartlib:smartlib-kaltura:05.01.05.6a7afaf'
