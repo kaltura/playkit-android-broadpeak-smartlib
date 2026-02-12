@@ -4,7 +4,7 @@ apply from: 'version.gradle'
 
 android {
     namespace 'com.kaltura.playkit.plugin.broadpeak'
-    compileSdk 34
+    compileSdk 35
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -14,7 +14,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionName libVersion
         buildConfigField("String","VERSION_NAME","\"${libVersion}\"")
     }
@@ -44,8 +44,8 @@ dependencies {
     api 'com.kaltura:kaltura-player-android:PLAYEROTT-56-SNAPSHOT'
     //api project(":tvplayer")
     //api 'tv.broadpeak.smartlib:smartlib-kaltura:04.07.01.4334a05'
-    api 'tv.broadpeak.smartlib:smartlib-kaltura:05.01.05.6a7afaf'
-    api 'tv.broadpeak.smartlib:smartlib-media3:05.01.05.6a7afaf'
+    api 'tv.broadpeak.smartlib:smartlib-kaltura:05.02.03.730dca7'
+    api 'tv.broadpeak.smartlib:smartlib-media3:05.02.03.730dca7'
 }
 
 repositories {
